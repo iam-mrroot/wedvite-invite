@@ -12,6 +12,7 @@ import {
 interface MusicContextValue {
   isPlaying: boolean;
   isMuted: boolean;
+  hasStarted: boolean;
   toggleMute: () => void;
   togglePlay: () => void;
 }
@@ -19,6 +20,7 @@ interface MusicContextValue {
 const MusicContext = createContext<MusicContextValue>({
   isPlaying: false,
   isMuted: false,
+  hasStarted: false,
   toggleMute: () => {},
   togglePlay: () => {},
 });
@@ -38,13 +40,14 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
 
   // Initialise the Audio element once on the client
   useEffect(() => {
     const audio = new Audio('/music/wedding-bg.mp3');
     audio.loop = true;
     audio.volume = 0;
-    audio.preload = 'none';
+    audio.preload = 'auto';
 
     // Swallow missing-file errors silently
     audio.addEventListener('error', () => {});
@@ -88,6 +91,7 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
       .play()
       .then(() => {
         setIsPlaying(true);
+        setHasStarted(true);
         fadeIn();
       })
       .catch(() => {
@@ -122,6 +126,7 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
         .play()
         .then(() => {
           setIsPlaying(true);
+          setHasStarted(true);
           fadeIn();
         })
         .catch(() => {});
@@ -139,7 +144,7 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <MusicContext.Provider value={{ isPlaying, isMuted, toggleMute, togglePlay }}>
+    <MusicContext.Provider value={{ isPlaying, isMuted, hasStarted, toggleMute, togglePlay }}>
       {children}
     </MusicContext.Provider>
   );

@@ -51,7 +51,14 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   // metadataBase makes relative OG image paths resolve to an absolute URL
   // which WhatsApp, iMessage, and other scrapers require.
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3001'),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_BASE_URL ??
+    (process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+      : process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : 'http://localhost:3001')
+  ),
   title: tabTitle,
   description: tabDesc,
   openGraph: {

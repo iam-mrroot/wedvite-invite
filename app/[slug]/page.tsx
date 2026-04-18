@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!wedding || resolution.type === 'not_found') return {};
 
   const og = wedding.og ?? {};
-  const image = og.image ?? '/og-image.jpg';
+  const image = og.image ?? '/og-image.jpeg';
   const images = [{ url: image, width: 1200, height: 630, alt: `${wedding.bride_name} & ${wedding.groom_name}` }];
 
   let title: string;

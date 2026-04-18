@@ -3,7 +3,16 @@
 import { useMusicContext } from './MusicProvider';
 
 export function MusicToggle() {
-  const { isMuted, isPlaying, toggleMute } = useMusicContext();
+  const { isMuted, isPlaying, hasStarted, toggleMute, togglePlay } = useMusicContext();
+
+  // On mobile, first tap must start playback; subsequent taps toggle mute
+  const handleClick = () => {
+    if (!hasStarted) {
+      togglePlay();
+    } else {
+      toggleMute();
+    }
+  };
 
   return (
     <>
@@ -29,7 +38,7 @@ export function MusicToggle() {
       `}</style>
 
       <button
-        onClick={toggleMute}
+        onClick={handleClick}
         aria-label={isMuted ? 'Unmute music' : 'Mute music'}
         className="
           fixed z-50

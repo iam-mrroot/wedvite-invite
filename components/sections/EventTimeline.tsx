@@ -115,7 +115,7 @@ function TimelineDot({ pulsing }: { pulsing: boolean }) {
 
 function EventRow({
   event,
-  index,
+  index: _index,
   isLeft,
   isMobile,
 }: {

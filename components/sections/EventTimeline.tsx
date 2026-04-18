@@ -157,14 +157,14 @@ function EventRow({
           (isLeft ? 'sm:pr-[calc(50%+32px)]' : 'sm:pl-[calc(50%+32px)]')
         }
       >
-        {/* max-w cap + push left cards to the right edge of their half */}
-        <div className={'max-w-[420px] ' + (isLeft ? 'sm:ml-auto' : '')}>
+        <div className={'max-w-[420px] ' + (isLeft ? 'sm:ml-auto' : '')} style={{ perspective: '1200px' }}>
           <motion.div
             ref={cardRef}
-            initial={{ opacity: 0, x: xFrom }}
-            animate={cardInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.7, delay: index * 0.15, ease: EASE }}
-            className="overflow-hidden rounded-[6px] border border-gold-100/70 bg-white"
+            initial={{ opacity: 0, x: xFrom, rotateY: isMobile ? 0 : isLeft ? 15 : -15, scale: 0.95 }}
+            animate={cardInView ? { opacity: 1, x: 0, rotateY: 0, scale: 1 } : {}}
+            transition={{ duration: 0.9, delay: 0.1, ease: EASE }}
+            whileHover={{ y: -6, boxShadow: '0 15px 35px rgba(201,168,76,0.1), 0 5px 15px rgba(0,0,0,0.04)' }}
+            className="overflow-hidden rounded-[8px] border border-gold-100/70 bg-white"
             style={{
               boxShadow: '0 4px 24px rgba(0,0,0,0.055), 0 1px 4px rgba(0,0,0,0.04)',
               willChange: 'transform',

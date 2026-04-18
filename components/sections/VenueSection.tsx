@@ -207,11 +207,12 @@ function VenueCard({ venue, index }: { venue: Venue; index: number }) {
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 32 }}
+      initial={{ opacity: 0, y: 40 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.65, delay: index * 0.12, ease: EASE }}
-      className="overflow-hidden rounded-[6px] border border-gold-100/70 bg-white"
-      style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.055), 0 1px 4px rgba(0,0,0,0.04)' }}
+      transition={{ duration: 0.8, delay: index * 0.15, ease: EASE }}
+      whileHover={{ y: -10, boxShadow: '0 20px 40px rgba(201,168,76,0.12), 0 5px 15px rgba(0,0,0,0.06)' }}
+      className="overflow-hidden rounded-[10px] border border-white/60 bg-white/40 backdrop-blur-md"
+      style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.05), inset 0 0 0 1px rgba(255,255,255,0.4)', willChange: 'transform' }}
     >
       <MapPlaceholder venue={venue} />
 
@@ -269,7 +270,17 @@ export function VenueSection({ events }: VenueSectionProps) {
   const isSingle = venues.length === 1;
 
   return (
-    <section className="bg-cream py-20 sm:py-[120px]">
+    <section className="relative overflow-hidden bg-cream py-20 sm:py-[120px]">
+      
+      {/* ── Ambient Background Orbs for Glassmorphism ── */}
+      <div 
+        className="pointer-events-none absolute left-[-10%] top-[10%] h-[40vh] w-[40vh] rounded-full blur-[100px]"
+        style={{ background: 'radial-gradient(circle, rgba(201,168,76,0.1) 0%, transparent 70%)' }}
+      />
+      <div 
+        className="pointer-events-none absolute right-[-5%] bottom-[10%] h-[50vh] w-[50vh] rounded-full blur-[120px]"
+        style={{ background: 'radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%)' }}
+      />
 
       {/* ── Section header ───────────────────────────────────────────────── */}
       <div

@@ -170,8 +170,8 @@ const fieldVariants = {
 // Shared bottom-border input class builder
 // ---------------------------------------------------------------------------
 function inputClass(focused: boolean) {
-  return `w-full border-b bg-transparent pt-3 pb-2 min-h-[44px] font-sans text-[16px] text-cream outline-none transition-all duration-300 placeholder:text-warmgray/40 ${
-    focused ? 'border-gold-400' : 'border-gold-700'
+  return `w-full rounded-md border bg-transparent px-4 py-3 min-h-[48px] font-sans text-[15px] text-cream outline-none transition-all duration-300 placeholder:text-warmgray/40 ${
+    focused ? 'border-gold-400 bg-gold-400/10 shadow-[0_0_20px_rgba(201,168,76,0.2)]' : 'border-gold-800 hover:border-gold-600'
   }`;
 }
 
@@ -409,30 +409,25 @@ export function RsvpSection({
                       >
                         Your Name
                       </label>
-                      <input
-                        id="rsvp-name"
-                        type="text"
-                        value={name}
-                        autoComplete="name"
-                        onChange={(e) => {
-                          setName(e.target.value);
-                          if (nameError) setNameError(null);
-                        }}
-                        onFocus={(e) => {
-                          setFocusedField('name');
-                          scrollToInput(e.currentTarget);
-                        }}
-                        onBlur={() => {
-                          setFocusedField(null);
-                          if (!name.trim()) setNameError('Please enter your name');
-                        }}
-                        className={inputClass(focusedField === 'name')}
-                        style={
-                          focusedField === 'name'
-                            ? { boxShadow: '0 2px 10px rgba(201,168,76,0.12)' }
-                            : {}
-                        }
-                      />
+                        <input
+                          id="rsvp-name"
+                          type="text"
+                          value={name}
+                          autoComplete="name"
+                          onChange={(e) => {
+                            setName(e.target.value);
+                            if (nameError) setNameError(null);
+                          }}
+                          onFocus={(e) => {
+                            setFocusedField('name');
+                            scrollToInput(e.currentTarget);
+                          }}
+                          onBlur={() => {
+                            setFocusedField(null);
+                            if (!name.trim()) setNameError('Please enter your name');
+                          }}
+                          className={inputClass(focusedField === 'name')}
+                        />
                       {nameError && (
                         <p className="font-sans text-[12px]" style={{ color: '#C0392B' }}>
                           {nameError}
@@ -469,11 +464,6 @@ export function RsvpSection({
                     }}
                     onBlur={() => setFocusedField(null)}
                     className={inputClass(focusedField === 'phone')}
-                    style={
-                      focusedField === 'phone'
-                        ? { boxShadow: '0 2px 10px rgba(201,168,76,0.12)' }
-                        : {}
-                    }
                   />
                 </motion.div>
 
@@ -726,7 +716,7 @@ export function RsvpSection({
                   <motion.button
                     type="submit"
                     disabled={isSubmitting || isSubmitted}
-                    whileHover={!isSubmitting ? { opacity: 0.88 } : {}}
+                    whileHover={!isSubmitting ? { scale: 1.02, boxShadow: '0 0 35px rgba(201,168,76,0.4)', backgroundColor: '#D4B86A' } : {}}
                     whileTap={!isSubmitting ? { scale: 0.97 } : {}}
                     transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                     className={`relative w-full overflow-hidden rounded-full py-4 font-sans text-[13px] uppercase text-charcoal disabled:cursor-not-allowed ${
@@ -747,7 +737,7 @@ export function RsvpSection({
                         transition={{ duration: 3, repeat: Infinity, ease: 'linear', repeatDelay: 2 }}
                       />
                     )}
-                    <span className="relative z-10">{isSubmitting ? 'Sending...' : 'Confirm RSVP'}</span>
+                    <span className="relative z-10">{isSubmitting ? 'Sending...' : 'Confirm'}</span>
                   </motion.button>
 
                   {submitError && (

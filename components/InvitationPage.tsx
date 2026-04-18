@@ -37,6 +37,7 @@ const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 const BG_CREAM    = '#FAF6F0';
 const BG_WHITE    = '#FFFFFF';
 const BG_CHARCOAL = '#1C1C1C';
+const BG_HERO     = '#141210'; // hero dark background
 
 // ---------------------------------------------------------------------------
 // MiniOrnament — 40px version of the shared flourish
@@ -80,7 +81,7 @@ function SectionDivider({ from, to }: { from: string; to: string }) {
 
   // Choose ornament colour that reads against the midpoint background.
   // If either side is charcoal, use a brighter gold; otherwise a soft gold.
-  const isDark = from === BG_CHARCOAL || to === BG_CHARCOAL;
+  const isDark = from === BG_CHARCOAL || to === BG_CHARCOAL || from === BG_HERO || to === BG_HERO;
 
   return (
     <motion.div
@@ -190,6 +191,9 @@ export function InvitationPage({
         tagline={tagline}
         onScrollDown={scrollToTimeline}
       />
+
+      {/* Divider: hero dark → cream */}
+      <SectionDivider from={BG_HERO} to={BG_CREAM} />
 
       {/* Countdown timer — only rendered while the ceremony is in the future */}
       {countdownTo && (

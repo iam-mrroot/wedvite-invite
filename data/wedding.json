@@ -5,29 +5,25 @@
   "groom_name": "Sajin",
   "wedding_date": "26th April 2026",
   "greeting_default": "Together with their families",
-
   "site": {
     "tab_title": "Sajin & Keerthana — Wedding Invitation",
     "tab_description": "You're invited to celebrate the wedding of Sajin & Keerthana on 26th April 2026.",
     "loading_monogram": "S & K",
     "loading_tagline": "Loading your invitation..."
   },
-
   "og": {
-    "image": "/og-image.jpg",
-    "title_personal":     "You're invited, {name}! 💌",
+    "image": "/og-image.jpeg",
+    "title_personal": "You're invited, {name}! 💌",
     "description_personal": "Dear {name}, Sajin & Keerthana joyfully request your presence at their wedding on 26th April 2026. Tap to open your personal invitation.",
-    "title_category":     "{category} — You're invited! 💌",
+    "title_category": "{category} — You're invited! 💌",
     "description_category": "Sajin & Keerthana invite you to celebrate their wedding on 26th April 2026. Tap to view the invitation.",
-    "title_universal":    "Sajin & Keerthana are getting married! 💌",
+    "title_universal": "Sajin & Keerthana are getting married! 💌",
     "description_universal": "Join us to celebrate the wedding of Sajin & Keerthana on 26th April 2026. Tap to view the invitation."
   },
-
   "config_json": {
     "hashtag": "#SajinWeds Keerthana",
     "countdown_to": "2026-04-26T05:15:00"
   },
-
   "events": [
     {
       "id": "evt-1",
@@ -66,7 +62,6 @@
       "maps_url": "https://maps.app.goo.gl/jSBDP5P1BAavFJCJ9"
     }
   ],
-
   "categories": [
     {
       "id": "cat-1",
@@ -87,7 +82,6 @@
       "greeting": "Sharing our joy with wonderful colleagues"
     }
   ],
-
   "guests": [
     {
       "id": "g-1",

@@ -24,7 +24,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title,
       description,
       type: 'website',
-      images: [{ url: image, width: 1200, height: 630, alt: `${wedding.bride_name} & ${wedding.groom_name}` }],
+      images: [{ url: image, width: 953, height: 501, alt: `${wedding.bride_name} & ${wedding.groom_name}` }],
     },
     twitter: {
       card: 'summary_large_image',

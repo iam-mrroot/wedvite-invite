@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const og = wedding.og ?? {};
   const image = og.image ?? '/og-image.jpg';
-  const images = [{ url: image, width: 1200, height: 630, alt: `${wedding.bride_name} & ${wedding.groom_name}` }];
+  const images = [{ url: image, width: 953, height: 501, alt: `${wedding.bride_name} & ${wedding.groom_name}` }];
 
   let title: string;
   let description: string;

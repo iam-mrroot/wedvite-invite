@@ -12,7 +12,6 @@ import {
 interface MusicContextValue {
   isPlaying: boolean;
   isMuted: boolean;
-  hasStarted: boolean;
   toggleMute: () => void;
   togglePlay: () => void;
 }
@@ -20,7 +19,6 @@ interface MusicContextValue {
 const MusicContext = createContext<MusicContextValue>({
   isPlaying: false,
   isMuted: false,
-  hasStarted: false,
   toggleMute: () => {},
   togglePlay: () => {},
 });
@@ -33,25 +31,25 @@ const VOLUME = 0.3;
 const FADE_DURATION_MS = 2000;
 const FADE_STEP_MS = 50;
 
+// Only click/touchstart count as user gestures for audio on iOS Safari.
+// scroll and keydown are NOT valid gestures for audio autoplay.
+const UNLOCK_EVENTS = ['click', 'touchstart'] as const;
+
 export function MusicProvider({ children }: { children: React.ReactNode }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const fadeTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const hasStartedRef = useRef(false);
+  const isStartingRef = useRef(false);
+  const unlockHandlerRef = useRef<(() => void) | null>(null);
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
-  const [hasStarted, setHasStarted] = useState(false);
 
-  // Initialise the Audio element once on the client
   useEffect(() => {
     const audio = new Audio('/music/wedding-bg.mp3');
     audio.loop = true;
     audio.volume = 0;
     audio.preload = 'auto';
-
-    // Swallow missing-file errors silently
     audio.addEventListener('error', () => {});
-
     audioRef.current = audio;
 
     return () => {
@@ -60,15 +58,22 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
+  const removeUnlockListeners = useCallback(() => {
+    if (unlockHandlerRef.current) {
+      UNLOCK_EVENTS.forEach((e) =>
+        window.removeEventListener(e, unlockHandlerRef.current!)
+      );
+      unlockHandlerRef.current = null;
+    }
+  }, []);
+
   const fadeIn = useCallback(() => {
     const audio = audioRef.current;
     if (!audio) return;
-
     if (fadeTimerRef.current) clearInterval(fadeTimerRef.current);
 
     const steps = FADE_DURATION_MS / FADE_STEP_MS;
     const increment = VOLUME / steps;
-
     audio.volume = 0;
 
     fadeTimerRef.current = setInterval(() => {
@@ -82,59 +87,60 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
     }, FADE_STEP_MS);
   }, []);
 
-  const startMusic = useCallback(() => {
+  // Called by the window unlock listeners (background taps/touches).
+  // The button calls togglePlay() directly with stopPropagation to avoid
+  // both paths firing at once, which would cause a double-play abort.
+  const startMusicFromGesture = useCallback(() => {
     const audio = audioRef.current;
-    if (!audio || hasStartedRef.current) return;
-    hasStartedRef.current = true;
+    if (!audio || isStartingRef.current || isPlaying) return;
+    isStartingRef.current = true;
 
     audio
       .play()
       .then(() => {
         setIsPlaying(true);
-        setHasStarted(true);
         fadeIn();
+        removeUnlockListeners(); // success — no more background listeners needed
       })
       .catch(() => {
-        // Autoplay still blocked — reset so we can retry on the next interaction
-        hasStartedRef.current = false;
+        // play() blocked — keep listeners alive so the next gesture retries
+        isStartingRef.current = false;
       });
-  }, [fadeIn]);
+  }, [fadeIn, isPlaying, removeUnlockListeners]);
 
-  // Attach one-time interaction listeners to kick off autoplay
+  // Attach background gesture listeners. Stays attached until first success.
   useEffect(() => {
-    const events = ['click', 'touchstart', 'scroll', 'keydown'] as const;
+    const handler = () => startMusicFromGesture();
+    unlockHandlerRef.current = handler;
+    UNLOCK_EVENTS.forEach((e) =>
+      window.addEventListener(e, handler, { passive: true })
+    );
+    return () => removeUnlockListeners();
+  }, [startMusicFromGesture, removeUnlockListeners]);
 
-    const handler = () => {
-      startMusic();
-      // Once started, remove all listeners
-      events.forEach((e) => window.removeEventListener(e, handler));
-    };
-
-    events.forEach((e) => window.addEventListener(e, handler, { once: true, passive: true }));
-
-    return () => {
-      events.forEach((e) => window.removeEventListener(e, handler));
-    };
-  }, [startMusic]);
-
+  // Used by the toggle button directly (with stopPropagation).
   const togglePlay = useCallback(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
     if (audio.paused) {
+      isStartingRef.current = true;
       audio
         .play()
         .then(() => {
           setIsPlaying(true);
-          setHasStarted(true);
           fadeIn();
+          removeUnlockListeners();
+          isStartingRef.current = false;
         })
-        .catch(() => {});
+        .catch(() => {
+          isStartingRef.current = false;
+        });
     } else {
       audio.pause();
       setIsPlaying(false);
     }
-  }, [fadeIn]);
+  }, [fadeIn, removeUnlockListeners]);
 
   const toggleMute = useCallback(() => {
     const audio = audioRef.current;
@@ -144,7 +150,7 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <MusicContext.Provider value={{ isPlaying, isMuted, hasStarted, toggleMute, togglePlay }}>
+    <MusicContext.Provider value={{ isPlaying, isMuted, toggleMute, togglePlay }}>
       {children}
     </MusicContext.Provider>
   );

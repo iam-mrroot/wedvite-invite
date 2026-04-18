@@ -3,11 +3,14 @@
 import { useMusicContext } from './MusicProvider';
 
 export function MusicToggle() {
-  const { isMuted, isPlaying, hasStarted, toggleMute, togglePlay } = useMusicContext();
+  const { isMuted, isPlaying, toggleMute, togglePlay } = useMusicContext();
 
-  // On mobile, first tap must start playback; subsequent taps toggle mute
-  const handleClick = () => {
-    if (!hasStarted) {
+  const handleClick = (e: React.MouseEvent) => {
+    // Stop the click from bubbling to window so the background gesture listener
+    // doesn't also fire — that double-play causes both calls to abort each other.
+    e.stopPropagation();
+
+    if (!isPlaying) {
       togglePlay();
     } else {
       toggleMute();
@@ -39,7 +42,7 @@ export function MusicToggle() {
 
       <button
         onClick={handleClick}
-        aria-label={isMuted ? 'Unmute music' : 'Mute music'}
+        aria-label={isPlaying && !isMuted ? 'Mute music' : 'Play music'}
         className="
           fixed z-50
           w-12 h-12 rounded-full
@@ -56,7 +59,7 @@ export function MusicToggle() {
           bottom: 'max(1.5rem, calc(env(safe-area-inset-bottom, 0px) + 0.75rem))',
         }}
       >
-        {isMuted ? <MutedIcon /> : <SoundWave playing={isPlaying} />}
+        {isPlaying && !isMuted ? <SoundWave playing /> : <MutedIcon />}
       </button>
     </>
   );
@@ -86,9 +89,7 @@ function MutedIcon() {
       strokeLinejoin="round"
       aria-hidden="true"
     >
-      {/* Speaker body */}
       <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="white" stroke="none" />
-      {/* Mute X lines */}
       <line x1="23" y1="9" x2="17" y2="15" />
       <line x1="17" y1="9" x2="23" y2="15" />
     </svg>

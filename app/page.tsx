@@ -13,7 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
   if (!wedding) return {};
 
   const og = wedding.og ?? {};
-  const image = og.image ?? '/og-image.jpeg';
+  const image = og.image ?? '/og-image.jpg';
   const title       = og.title_universal       ?? `${wedding.bride_name} & ${wedding.groom_name} — Wedding Invitation 💌`;
   const description = og.description_universal ?? `You're invited to celebrate the wedding of ${wedding.bride_name} & ${wedding.groom_name}.`;
 
